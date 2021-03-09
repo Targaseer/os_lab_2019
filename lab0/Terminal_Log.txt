@@ -3,23 +3,10 @@
 /projects
 [jboss@workspace0bbwhknjg144cm7k projects]$ ls
 CPP  os_lab_2019
-[jboss@workspace0bbwhknjg144cm7k projects]$ cd /os_lab_2019
-bash: cd: /os_lab_2019: No such file or directory
 [jboss@workspace0bbwhknjg144cm7k projects]$ cd os_lab_2019/
 [jboss@workspace0bbwhknjg144cm7k os_lab_2019]$ cd lab0/
 [jboss@workspace0bbwhknjg144cm7k lab0]$ mkdir hello
-[jboss@workspace0bbwhknjg144cm7k lab0]$ touch /hello empty
-touch: cannot touch '/hello': Permission denied
-[jboss@workspace0bbwhknjg144cm7k lab0]$ touch hello/ empty
-[jboss@workspace0bbwhknjg144cm7k lab0]$ rm empty
 [jboss@workspace0bbwhknjg144cm7k lab0]$ touch hello/empty
-[jboss@workspace0bbwhknjg144cm7k lab0]$ cat src/hello.c hello/
-#include <stdio.h>
-
-int main()
-{
-    printf("Hello World!\n");
-}cat: hello/: Is a directory
 [jboss@workspace0bbwhknjg144cm7k lab0]$ cp src/hello.c hello/
 [jboss@workspace0bbwhknjg144cm7k lab0]$ mv hello/hello.c hello/newhello.c
 4
