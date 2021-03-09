@@ -1,0 +1,42 @@
+1
+[jboss@workspace0bbwhknjg144cm7k projects]$ cd os_lab_2019/lab1
+[jboss@workspace0bbwhknjg144cm7k lab1]$ ./src/background.sh &
+[1] 255
+[jboss@workspace0bbwhknjg144cm7k lab1]$ 1 sec
+2 sec
+3 sec
+4 sec
+5 sec
+6 sec
+7 sec
+8 sec
+9 sec
+10 sec
+Done!
+cat >exmpl.txt
+HI[1]+  Done                    ./src/background.sh
+[jboss@workspace0bbwhknjg144cm7k lab1]$ cat exmpl.txt
+
+[jboss@workspace0bbwhknjg144cm7k lab1]$ wc -m exmpl.txt
+2 exmpl.txt
+
+2
+[jboss@workspace0bbwhknjg144cm7k lab1]$ grep cake src/cake_rhymes.txt | cat >with_cake.txt
+[jboss@workspace0bbwhknjg144cm7k lab1]$ rm a 1>/dev/null
+rm: cannot remove 'a': No such file or directory
+[jboss@workspace0bbwhknjg144cm7k lab1]$ touch test
+[jboss@workspace0bbwhknjg144cm7k lab1]$ rm test
+
+3
+[jboss@workspace0bbwhknjg144cm7k lab1]$ touch bash_script
+[jboss@workspace0bbwhknjg144cm7k lab1]$ chmod u+x bash_script
+[jboss@workspace0bbwhknjg144cm7k lab1]$ ./bash_script
+09/03/2021_13:48:19
+/home/jboss/.local/bin:/home/jboss/bin:/usr/share/Modules/bin:/usr/bin:/usr/sbin:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+4
+[jboss@workspace0bbwhknjg144cm7k lab1]$ shuf -i 0-2000 -n 150 | cat >numbers.txt
+[jboss@workspace0bbwhknjg144cm7k lab1]$ ./average.sh <numbers.txt
+Sum of inputs = 141949
+Number of inputs = 150
+Average input = 946.00000
