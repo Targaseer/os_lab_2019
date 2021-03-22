@@ -35,8 +35,10 @@ rm: cannot remove 'a': No such file or directory
 /home/jboss/.local/bin:/home/jboss/bin:/usr/share/Modules/bin:/usr/bin:/usr/sbin:/opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 4
-[jboss@workspace0bbwhknjg144cm7k lab1]$ shuf -i 0-2000 -n 150 | cat >numbers.txt
+[jboss@workspace0bbwhknjg144cm7k lab1]$ touch generator.sh
+[jboss@workspace0bbwhknjg144cm7k lab1]$ chmod u+x generator.sh
+[jboss@workspace0bbwhknjg144cm7k lab1]$ ./generator.sh
 [jboss@workspace0bbwhknjg144cm7k lab1]$ ./average.sh <numbers.txt
-Sum of inputs = 141949
+Sum of inputs = 4890212
 Number of inputs = 150
-Average input = 946.00000
+Average input = 32601.00000
