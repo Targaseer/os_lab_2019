@@ -1,0 +1,23 @@
+1.
+[jboss@workspace0bbwhknjg144cm7k swap]$ gcc swap.c main.c -o swapping
+[jboss@workspace0bbwhknjg144cm7k swap]$ ./swapping
+b a
+2.
+[jboss@workspace0bbwhknjg144cm7k revert_string]$ gcc main.c revert_string.c -o revert
+[jboss@workspace0bbwhknjg144cm7k revert_string]$ ./revert dsndjians
+Reverted: snaijdnsd
+3.
+[jboss@workspace0bbwhknjg144cm7k lab2]$ gcc -c ./src/revert_string/main.c -o ./bin/main.o
+[jboss@workspace0bbwhknjg144cm7k lab2]$ gcc -c -fPIC ./src/revert_string/revert_string.c -o ./bin/shared/revert_string.o
+[jboss@workspace0bbwhknjg144cm7k lab2]$ gcc -c ./src/revert_string/revert_string.c -o ./bin/static/revert_string.o
+[jboss@workspace0bbwhknjg144cm7k lab2]$ ar rcs ./bin/static/librevert_string.a ./bin/static/revert_string.o
+[jboss@workspace0bbwhknjg144cm7k lab2]$ gcc ./bin/main.o -L./bin/static -lrevert_string -o ./bin/statically_linked
+[jboss@workspace0bbwhknjg144cm7k lab2]$ ./bin/statically_linked refwf
+Reverted: fwfer
+[jboss@workspace0bbwhknjg144cm7k lab2]$ gcc -shared ./bin/shared/revert_string.o -o ./bin/shared/librevert_string.so
+[jboss@workspace0bbwhknjg144cm7k lab2]$ gcc ./bin/main.o -L./bin/shared -lrevert_string -o ./bin/with_shared_lib
+[jboss@workspace0bbwhknjg144cm7k lab2]$ LD_LIBRARY_PATH=$(pwd)/bin/shared
+[jboss@workspace0bbwhknjg144cm7k lab2]$ ./bin/with_shared_lib
+Usage: ./bin/with_shared_lib string_to_revert
+[jboss@workspace0bbwhknjg144cm7k lab2]$ ./bin/with_shared_lib rfefefedd
+Reverted: ddefefefr
