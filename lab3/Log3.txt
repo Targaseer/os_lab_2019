@@ -1,0 +1,63 @@
+1.
+[jboss@workspace0bbwhknjg144cm7k src]$ gcc ./sequential_min_max.c ./find_min_max.c ./utils.c -o seq_minmax
+[jboss@workspace0bbwhknjg144cm7k src]$ ./seq_minmax 10 20
+min: 54404747
+max: 2100364173
+2.
+[jboss@workspace0bbwhknjg144cm7k src]$ gcc ./parallel_min_max.c ./find_min_max.c ./utils.c -o paral_minmax
+----------------------------------------------------------------------------------------------------------- PIPES
+[jboss@workspace0bbwhknjg144cm7k src]$ ./paral_minmax --seed 10 --array_size 100000000 --pnum 1
+Min: 1
+Max: 2147483617
+Elapsed time: 396.882000ms
+[jboss@workspace0bbwhknjg144cm7k src]$ ./paral_minmax --seed 10 --array_size 100000000 --pnum 2
+Min: 1
+Max: 2147483617
+Elapsed time: 270.365000ms
+[jboss@workspace0bbwhknjg144cm7k src]$ ./paral_minmax --seed 10 --array_size 100000000 --pnum 3
+Min: 1
+Max: 2147483617
+Elapsed time: 288.708000ms
+[jboss@workspace0bbwhknjg144cm7k src]$ ./paral_minmax --seed 10 --array_size 100000000 --pnum 5
+Min: 1
+Max: 2147483617
+Elapsed time: 346.101000ms
+[jboss@workspace0bbwhknjg144cm7k src]$ ./paral_minmax --seed 10 --array_size 100000000 --pnum 10
+Min: 1
+Max: 2147483617
+Elapsed time: 357.345000ms
+[jboss@workspace0bbwhknjg144cm7k src]$ ./paral_minmax --seed 10 --array_size 100000000 --pnum 20
+Min: 1
+Max: 2147483617
+Elapsed time: 354.114000ms
+----------------------------------------------------------------------------------------------------------- FILES
+[jboss@workspace0bbwhknjg144cm7k src]$ ./paral_minmax --seed 10 --array_size 100000000 --pnum 1 -f
+Min: 1
+Max: 2147483617
+Elapsed time: 296.103000ms
+[jboss@workspace0bbwhknjg144cm7k src]$ ./paral_minmax --seed 10 --array_size 100000000 --pnum 2 -f
+Min: 1
+Max: 2147483617
+Elapsed time: 263.526000ms
+[jboss@workspace0bbwhknjg144cm7k src]$ ./paral_minmax --seed 10 --array_size 100000000 --pnum 3 -f
+Min: 1
+Max: 2147483617
+Elapsed time: 243.977000ms
+[jboss@workspace0bbwhknjg144cm7k src]$ ./paral_minmax --seed 10 --array_size 100000000 --pnum 5 -f
+Min: 1
+Max: 2147483617
+Elapsed time: 320.919000ms
+4.
+[jboss@workspace0bbwhknjg144cm7k src]$ make
+gcc -o utils.o -c utils.c -I.
+gcc -o find_min_max.o -c find_min_max.c -I.
+gcc -o sequential_min_max find_min_max.o utils.o sequential_min_max.c -I.
+gcc -o parallel_min_max utils.o find_min_max.o parallel_min_max.c -I.
+5.
+[jboss@workspace0bbwhknjg144cm7k src]$ make sequential_min_max_separate_process
+gcc -o seq_separate_process seq_separate_process.c -I.
+[jboss@workspace0bbwhknjg144cm7k src]$ ./seq_separate_process
+[jboss@workspace0bbwhknjg144cm7k src]$ Usage: ./seq_separate_process seed arraysize
+./seq_separate_process 10 20
+[jboss@workspace0bbwhknjg144cm7k src]$ min: 54404747
+max: 2100364173

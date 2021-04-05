@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
   int array_size = -1;
   int pnum = -1;
   bool with_files = false;
+  const char* filename = "Childs_Data.txt";
 
   while (true) {
     int current_optind = optind ? optind : 1;
@@ -59,9 +60,6 @@ int main(int argc, char **argv) {
                 return 1;
             }
             break;
-          case 3:
-            with_files = true;
-            break;
 
           default:
             printf("Index %d is out of options\n", option_index);
@@ -93,36 +91,44 @@ int main(int argc, char **argv) {
   int *array = malloc(sizeof(int) * array_size);
   GenerateArray(array, array_size, seed);
   int active_child_processes = 0;
-
+    int pipefd[2];
+    FILE *fp;
+    if (with_files)
+    {
+        fp = fopen(filename, "w");
+    }
+    else
+    {
+        if (pipe(pipefd) == -1)
+        {
+            printf("Pipe failed!\n");
+            return 1;
+        }
+    }
+    int part_size = array_size / pnum;
   struct timeval start_time;
   gettimeofday(&start_time, NULL);
-    int pipefd[pnum * 2][2];
   for (int i = 0; i < pnum; i++) {
     pid_t child_pid = fork();
     if (child_pid >= 0) {
       // successful fork
-        if (pipe(pipefd[i])==-1)
-        {
-            printf("Pipe Failed!\n");
-            return 1;
-        }
-        if (pipe(pipefd[i + pnum])==-1)
-        {
-            printf("Pipe Failed!\n");
-            return 1;
-        }
-      active_child_processes += 1;
+      active_child_processes++;
       if (child_pid == 0) {
         // child process
-
         // parallel somehow
-
+        struct MinMax cur_ans;
+        if (i != pnum - 1)
+        {
+            cur_ans = GetMinMax(array, i*part_size, i*part_size + part_size);
+        }
+        else
+        {
+            cur_ans = GetMinMax(array, i*part_size, array_size);
+        }
         if (with_files) {
-          // use files here
+            fprintf(fp, "%d %d\n", cur_ans.min, cur_ans.max);
         } else {
-            close(pipefd[i][1]);
-            struct MinMax cur_ans = GetMinMax(array, i*(array_size / pnum), i*(array_size/pnum) + array_size/pnum);
-            
+            write(pipefd[1], &cur_ans, sizeof(cur_ans));
         }
         return 0;
       }
@@ -134,7 +140,7 @@ int main(int argc, char **argv) {
   }
 
   while (active_child_processes > 0) {
-    // your code here
+    wait(NULL);
 
     active_child_processes -= 1;
   }
@@ -143,18 +149,25 @@ int main(int argc, char **argv) {
   min_max.min = INT_MAX;
   min_max.max = INT_MIN;
 
+    if(with_files)
+    {
+        fclose(fp);
+        fp = fopen(filename, "r");
+    }
   for (int i = 0; i < pnum; i++) {
-    int min = INT_MAX;
-    int max = INT_MIN;
+    struct MinMax cur_MinMax;
 
     if (with_files) {
-      // read from files
+        int tmin, tmax;
+        fscanf(fp, "%d %d\n", &tmin, &tmax);
+        cur_MinMax.min = tmin;
+        cur_MinMax.max = tmax;
     } else {
-      // read from pipes
+        read(pipefd[0], &cur_MinMax, sizeof(cur_MinMax));
     }
 
-    if (min < min_max.min) min_max.min = min;
-    if (max > min_max.max) min_max.max = max;
+    if (cur_MinMax.min < min_max.min) min_max.min = cur_MinMax.min;
+    if (cur_MinMax.max > min_max.max) min_max.max = cur_MinMax.max;
   }
 
   struct timeval finish_time;
@@ -163,6 +176,11 @@ int main(int argc, char **argv) {
   double elapsed_time = (finish_time.tv_sec - start_time.tv_sec) * 1000.0;
   elapsed_time += (finish_time.tv_usec - start_time.tv_usec) / 1000.0;
 
+    if(with_files)
+    {
+        fclose(fp);
+        remove(filename);
+    }
   free(array);
 
   printf("Min: %d\n", min_max.min);
