@@ -1,8 +1,0 @@
-1.
-[jboss@workspace0bbwhknjg144cm7k src]$ make
-[jboss@workspace0bbwhknjg144cm7k src]$ ./parallel_min_max --seed 10 --array_size 20 --pnum 2 --timeout 1
-Process 84 started
-Process 85 started
-Time expired!
-Killed
-2.
