@@ -1,0 +1,22 @@
+3.
+[jboss@workspaced23l3saft021652n src]$ ./process_memory
+Address etext:   400A95 
+Address edata:   601068 
+Address end  :   6010A0 
+ID main          is at virtual address:   400826
+ID showit        is at virtual address:   400954
+ID cptr          is at virtual address:   601060
+ID buffer1       is at virtual address:   601080
+ID i     is at virtual address: FD9EE9EC
+A demonstration
+ID buffer2       is at virtual address: FD9EE9C8
+Alocated memory at 20586B0
+This message is output by the function showit()
+
+5.
+[jboss@workspaced23l3saft021652n src]$ gcc -c ./sum.c -o ../sum/sum.o
+[jboss@workspaced23l3saft021652n src]$ ar rcs ../sum/libsum.a ../sum/sum.o
+
+[jboss@workspaced23l3saft021652n src]$ ./parallel_sum --seed 10 --array_size 100000000 --threads_num 3
+Total: 249961654810
+Elapsed time: 224.400000ms
