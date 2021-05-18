@@ -13,7 +13,44 @@
 #include <sys/types.h>
 
 #include <unistd.h>
+#include "pthread.h"
 #include "multmodulo.h"
+
+struct ParallelArgs {
+  uint64_t begin;
+  uint64_t end;
+  uint64_t mod;
+  int sck;
+};
+
+uint64_t GetAnswer(const struct ParallelArgs *args) {
+  char task[sizeof(uint64_t) * 3];
+    memcpy(task, &args->begin, sizeof(uint64_t));
+    memcpy(task + sizeof(uint64_t), &args->end, sizeof(uint64_t));
+    memcpy(task + 2 * sizeof(uint64_t), &args->mod, sizeof(uint64_t));
+
+    if (send(args->sck, task, sizeof(task), 0) < 0) {
+        fprintf(stderr, "Send failed\n");
+        exit(1);
+    }
+    
+
+    char response[sizeof(uint64_t)];
+    if (recv(args->sck, response, sizeof(response), 0) < 0) {
+      fprintf(stderr, "Recieve failed\n");
+      exit(1);
+    }
+
+    uint64_t cur_answer = 0;
+    memcpy(&cur_answer, response, sizeof(uint64_t));
+
+  return cur_answer;
+}
+
+void *ThreadServer(void *args) {
+  struct ParallelArgs *fargs = (struct ParallelArgs *)args;
+  return (void *)(uint64_t *)GetAnswer(fargs);
+}
 
 struct Server {
   char ip[255];
@@ -98,23 +135,18 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  // TODO: for one server here, rewrite with servers from file
   FILE *fp;
   fp = fopen(servers, "r");
   unsigned int servers_num = 1;
   fscanf(fp, "%d\n", &servers_num);
   struct Server *to = malloc(sizeof(struct Server) * servers_num);
-  // TODO: delete this and parallel work between servers
-  /*
-  to[0].port = 20001;
-  memcpy(to[0].ip, "127.0.0.1", sizeof("127.0.0.1"));
-  */
   for (int i = 0; i < servers_num; i++)
   {
       fscanf(fp, "%s : %d\n", to[i].ip, &to[i].port);
   }
 
-  // TODO: work continiously, rewrite to make parallel
+  pthread_t threads[servers_num];
+  struct ParallelArgs args[servers_num];
   uint64_t answer = 1;
   uint64_t part_size = k / servers_num;
   for (int i = 0; i < servers_num; i++) {
@@ -140,44 +172,28 @@ int main(int argc, char **argv) {
       exit(1);
     }
 
-    // TODO: for one server
-    // parallel between servers
-    uint64_t begin = i*part_size + 1;
-    uint64_t end;
+    args[i].begin = i*part_size + 1;
     if (i + 1 == servers_num)
     {
-        end = k;
+        args[i].end = k;
     }
     else
     {
-        end = (i + 1)*part_size;
+        args[i].end = (i + 1)*part_size;
     }
-
-    char task[sizeof(uint64_t) * 3];
-    memcpy(task, &begin, sizeof(uint64_t));
-    memcpy(task + sizeof(uint64_t), &end, sizeof(uint64_t));
-    memcpy(task + 2 * sizeof(uint64_t), &mod, sizeof(uint64_t));
-
-    if (send(sck, task, sizeof(task), 0) < 0) {
-        fprintf(stderr, "Send failed\n");
-        exit(1);
+    args[i].mod = mod;
+    args[i].sck = sck;
+    if (pthread_create(&threads[i], NULL, ThreadServer, (void *)(args + i))) {
+      printf("Error: pthread_create failed!\n");
+      return 1;
     }
-    
-
-    char response[sizeof(uint64_t)];
-    if (recv(sck, response, sizeof(response), 0) < 0) {
-      fprintf(stderr, "Recieve failed\n");
-      exit(1);
-    }
-
-    // TODO: from one server
-    // unite results
-    uint64_t cur_answer = 0;
-    memcpy(&cur_answer, response, sizeof(uint64_t));
-    answer = MultModulo(cur_answer, answer, mod);
-
-    close(sck);
   }
+    for (uint32_t i = 0; i < servers_num; i++) {
+        uint64_t result = 0;
+        pthread_join(threads[i], (void **)&result);
+        answer = MultModulo(answer, result, mod);
+        close(args[i].sck);
+      }
   printf("answer: %lu\n", answer);
   free(to);
 

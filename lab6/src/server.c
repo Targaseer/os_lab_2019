@@ -13,25 +13,13 @@
 #include <arpa/inet.h>
 
 #include "pthread.h"
+#include "multmodulo.h"
 
 struct FactorialArgs {
   uint64_t begin;
   uint64_t end;
   uint64_t mod;
 };
-
-uint64_t MultModulo(uint64_t a, uint64_t b, uint64_t mod) {
-  uint64_t result = 0;
-  a = a % mod;
-  while (b > 0) {
-    if (b % 2 == 1)
-      result = (result + a) % mod;
-    a = (a * 2) % mod;
-    b /= 2;
-  }
-
-  return result % mod;
-}
 
 uint64_t Factorial(const struct FactorialArgs *args) {
   uint64_t ans = 1;
@@ -72,7 +60,7 @@ int main(int argc, char **argv) {
       case 0:
         port = atoi(optarg);
         if (port <= 0) {
-                printf("k is a positive number\n");
+                printf("port is a positive number\n");
                 return 1;
         }
         break;
